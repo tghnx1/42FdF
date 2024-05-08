@@ -6,7 +6,7 @@
 /*   By: mkokorev <mkokorev@student.42berlin.d>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/03 13:41:55 by mkokorev          #+#    #+#             */
-/*   Updated: 2024/01/10 19:52:02 by mkokorev         ###   ########.fr       */
+/*   Updated: 2024/04/18 12:44:16 by mkokorev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,17 +88,19 @@ char	*ft_strjoin(char const *s1, char const *s2)
 
 size_t	ft_strlcpy(char *dst, const char *src, size_t size)
 {
-	unsigned int	i;
+	size_t	i;
+	size_t	j;
 
 	i = 0;
+	j = ft_strlen(src);
 	if (size > 0)
 	{
-		while (i < (size_t)ft_strlen(src) && (i < size - 1))
+		while (i < j && (i < size - 1))
 		{
 			dst[i] = src[i];
 			i++;
 		}
 		dst[i] = '\0';
 	}
-	return (ft_strlen(src));
+	return (j);
 }

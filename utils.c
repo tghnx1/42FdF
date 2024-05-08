@@ -6,7 +6,7 @@
 /*   By: mkokorev <mkokorev@student.42berlin.d>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/03 12:31:29 by mkokorev          #+#    #+#             */
-/*   Updated: 2024/04/10 17:25:25 by mkokorev         ###   ########.fr       */
+/*   Updated: 2024/04/24 15:08:56 by mkokorev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,7 @@ void	matrix_free(t_coordinate **arr)
 void	def_colour(char *str, t_coordinate *node)
 {
 	char	**z_col;
+	char	*temp;
 
 	{
 		z_col = ft_split(str, ',');
@@ -72,8 +73,13 @@ void	def_colour(char *str, t_coordinate *node)
 			free(str);
 			return ;
 		}
-		(*node).z = ft_atoi(z_col[0]);
-		(*node).colour = ft_strdup(z_col[1]);
+		(*node).z = 100 * ft_atoi(z_col[0]);
+		temp = ft_strdup(z_col[1] + 2);
+		if ((temp[strlen(temp) - 1]) == '\n')
+			(*node).colour = ft_substr(temp, 0, (long)ft_strlen(temp) - 1);
+		else
+			(*node).colour = ft_strdup(z_col[1] + 2);
+		free(temp);
 		if (!(*node).colour)
 		{
 			free(str);
@@ -91,18 +97,11 @@ void	print_matrix_term(t_coordinate **matrix, char *argv)
 
 	i = 0;
 	j = 0;
-	while (i <= count_lines(argv))
+	while (i < count_lines(argv))
 	{
-		printf("%d;%d  ", matrix[i][j].x, matrix[i][j].y);
-		j++;
-		if (matrix[i][j - 1].end == 1)
-		{
-			j = 0;
-			i++;
-			if (!matrix[i])
-				break ;
-		}
-		printf("matrix[%d] : %p\n", i, matrix[i]);
+		while (j < arr_len(matrix[i]))
+			j++;
+		j = 0;
+		i++;
 	}
-	printf("matrix[%d] : %p\n", i, matrix[i]);
 }

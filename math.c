@@ -6,64 +6,36 @@
 /*   By: mkokorev <mkokorev@student.42berlin.d>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/03 18:44:52 by mkokorev          #+#    #+#             */
-/*   Updated: 2024/04/10 17:26:20 by mkokorev         ###   ########.fr       */
+/*   Updated: 2024/04/24 12:28:49 by mkokorev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "FdF.h"
 
-t_coordinate	**z_rotate(t_coordinate	**matrix, char *argv)
+int	str_hex_to_int(char *hex, int def_col)
 {
-	int				i;
-	int				j;
-
-	i = 0;
-	j = 0;
-	while (i <= count_lines(argv))
-	{
-		matrix[i][j].temp = matrix[i][j].x;
-		matrix[i][j].x = 0.71 * (matrix[i][j].x - matrix[i][j].y);
-		matrix[i][j].y = 0.71 * (matrix[i][j].temp + matrix[i][j].y);
-		j++;
-		if (matrix[i][j - 1].end == 1)
-		{
-			j = 0;
-			i++;
-			if (!matrix[i])
-				break ;
-		}
-	}
-	return (matrix);
-}
-
-t_coordinate	**y_rotate(t_coordinate	**matrix, char *argv)
-{
-	int				i;
-	int				j;
-
-	i = 0;
-	j = 0;
-	while (i <= count_lines(argv))
-	{
-		matrix[i][j].y = 0.71 * (matrix[i][j].y - matrix[i][j].z);
-		j++;
-		if (matrix[i][j - 1].end == 1)
-		{
-			j = 0;
-			i++;
-			if (!matrix[i])
-				break ;
-		}
-	}
-	return (matrix);
-}
-
-int	str_hex_to_int(char *hex)
-{
-	int	colour;
+	int		decimal;
+	size_t	i;
+	int		num;
+	int		digit;
 
 	if (!hex)
-		return (16777215);
-	
-	return (16711680);
+		return (def_col);
+	i = 0;
+	decimal = 0;
+	num = 1;
+	while (i < ft_strlen(hex))
+	{
+		if (!((hex[i] >= 'A' && hex[i] <= 'F') || (hex[i] >= '0'
+					&& hex[i] <= '9') || (hex[i] >= 'a' && hex[i] <= 'f')))
+			return (0);
+		if (hex[strlen(hex) - i - 1] >= 'A' && hex[i] <= 'F')
+			digit = hex[strlen(hex) - i - 1] - 55;
+		else
+			digit = hex[strlen(hex) - i - 1] - 48;
+		decimal += digit * num;
+		num = num * 16;
+		i++;
+	}
+	return (decimal);
 }

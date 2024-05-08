@@ -6,11 +6,12 @@
 /*   By: mkokorev <mkokorev@student.42berlin.d>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/03 13:22:04 by mkokorev          #+#    #+#             */
-/*   Updated: 2024/04/03 10:41:58 by mkokorev         ###   ########.fr       */
+/*   Updated: 2024/04/23 15:05:17 by mkokorev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
+#include <stdio.h>
 
 char	*free_arr(char **arr1, char **arr2, int a, int b)
 {

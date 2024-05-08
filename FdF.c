@@ -6,7 +6,7 @@
 /*   By: mkokorev <mkokorev@student.42berlin.d>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/03 10:02:51 by mkokorev          #+#    #+#             */
-/*   Updated: 2024/04/10 17:25:20 by mkokorev         ###   ########.fr       */
+/*   Updated: 2024/04/24 16:03:41 by mkokorev         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,28 +32,16 @@ int	count_lines(char *argv)
 	return (i);
 }
 
-t_coordinate	*makearr(char **str, int num, int y)
+t_coordinate	*makearr(char **str, int num, int y, t_coordinate *center)
 {
-	int				i;
 	t_coordinate	*arr;
 
 	if (!str)
 		return (0);
-	arr = ft_calloc(num, sizeof(t_coordinate));
+	arr = ft_calloc(num + 1, sizeof(t_coordinate));
 	if (!arr)
 		return (0);
-	i = 0;
-	while (str[i])
-	{
-		arr[i].y = SHIFT_Y + y * ZOOM;
-		arr[i].x = SHIFT_X + i * ZOOM;
-		if (ft_strchr(str[i], ','))
-			def_colour(str[i], &arr[i]);
-		else
-			arr[i].z = ft_atoi(str[i]);
-		i++;
-	}
-	arr[i - 1].end = 1;
+	coord_def(str, arr, y, center);
 	return (arr);
 }
 
@@ -69,30 +57,20 @@ int	line_length(char **array)
 	return (i);
 }
 
-t_coordinate	**matrix_def(char *argv)
+t_coordinate	**matrix_def(char *argv, t_coordinate *center)
 {
 	char			*line;
 	int				fd;
-	char			**str;
-	int				i;
 	t_coordinate	**matrix;
 
 	line = argv;
 	fd = open(argv, O_RDONLY);
-	i = 0;
+	if (!fd)
+		return (0);
 	matrix = ft_calloc(count_lines(argv) + 2, sizeof(t_coordinate *));
 	if (!matrix)
 		return (0);
-	while (line)
-	{
-		line = get_next_line(fd);
-		str = ft_split(line, ' ');
-		free(line);
-		matrix[i] = makearr(str, line_length(str), i);
-		i++;
-		char_arr_free(str);
-	}
-	matrix[i] = NULL;
+	line_extract(matrix, center, &fd, line);
 	close(fd);
 	return (matrix);
 }
@@ -100,13 +78,28 @@ t_coordinate	**matrix_def(char *argv)
 int	main(int argc, char **argv)
 	{
 	t_coordinate	**matrix;
+	t_coordinate	center;
 
-	matrix = matrix_def(argv[1]);
-	z_rotate(matrix, argv[1]);
-	y_rotate(matrix, argv[1]);
-	printf("colour[0][0] = %s\n", matrix[0][0].colour);
-	//print_matrix_term(matrix, argv[1]);
-	matrix_draw(matrix, 0, 0, argv[1]);
-	matrix_free(matrix);
+	if (argc != 2)
+	{
+		write(1, "Wrong number of arguments!\n", 27);
+		return (0);
+	}
+	center.y_min = INT_MAX;
+	center.y_max = 0;
+	center.x_min = INT_MAX;
+	center.x_max = 0;
+	center.x = 0;
+	center.y = 0;
+	center.z = 0;
+	center.screen_length = 1920;
+	center.screen_width = 1080;
+	center.default_colour = 3381657;
+	matrix = matrix_def(argv[1], &center);
+	if (!matrix)
+		return (0);
+	zoom_def(&center);
+	move_mat(matrix, &center);
+	matrix_draw(matrix, center);
 	return (0);
 }
